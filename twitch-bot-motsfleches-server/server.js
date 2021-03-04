@@ -52,9 +52,15 @@ server.listen(serverPort, () => {
 });
 
 
-const waitingUsers = JSON.parse(fs.readFileSync('./data/waitingUsers.json', 'utf8'))
-const assignedMots = JSON.parse(fs.readFileSync('./data/assignedMots.json', 'utf8'))
-const leaderboard = JSON.parse(fs.readFileSync('./data/leaderboard.json', 'utf8'))
+const waitingUsers = parseFileOrDefault('./data/waitingUsers.json', [])
+const assignedMots = parseFileOrDefault('./data/assignedMots.json', [])
+const leaderboard = parseFileOrDefault('./data/leaderboard.json', {})
+
+function parseFileOrDefault(path, defaultValue) {
+    return fs.existsSync(path)
+        ? JSON.parse(fs.readFileSync(path, 'utf8'))
+        : defaultValue
+}
 
 io.on('connection', (socket) => {
     socket.emit('waitingUsers', waitingUsers);
