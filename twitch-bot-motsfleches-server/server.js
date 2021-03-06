@@ -3,7 +3,7 @@
 // scopes: channel:read:redemptions
 
 import express from 'express'
-import http from 'http'
+import https from 'https'
 import {Server as SocketIoServer} from 'socket.io'
 import tmi from 'tmi.js'
 import {PubSubClient as TwitchPubSubClient} from 'twitch-pubsub-client';
@@ -24,8 +24,14 @@ const twitchAppAccessToken = process.env.TWITCH_APP_ACCESS_TOKEN;
 const testUsername = process.env.TEST_USERNAME;
 const appUrl = process.env.APP_URL;
 
+
+const options = {
+    key: fs.readFileSync('key.pem'),
+    cert: fs.readFileSync('cert.pem')
+};
+
 const app = express();
-const server = http.createServer(app);
+const server = https.createServer(options, app);
 const io = new SocketIoServer(server, {cors: {origin: appUrl, methods: ["GET", "POST"]}});
 
 const tmiClient = new tmi.Client({
