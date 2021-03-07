@@ -92,6 +92,10 @@ tmiClient.on('message', (channel, tags, message, self) => {
     if (message === '!mfl') {
         displayLeaderboard()
     }
+
+    if (message === '!mf') {
+        displayMotsAssigned(tags.username)
+    }
 });
 
 pubSubClient.onRedemption(userId, ({rewardId, userName}) => {
@@ -115,7 +119,7 @@ function assignMot({pseudo, definition, mot}) {
 
         assignedMots.push({pseudo, definition, mot, guess: ''})
         io.emit('assignedMots', assignedMots)
-        tmiClient.say(twitchChannel, `MOT POUR ${pseudo}: ${definition} - [${mot}] (pour envoyer une réponse: !mf REPONSE, leaderboard: !mfl)`)
+        tmiClient.say(twitchChannel, `MOT POUR ${pseudo}: ${definition} - [${mot}] (pour envoyer une réponse: !mf REPONSE, leaderboard: !mfl, mots assignés: !mf)`)
 
         updateJSONs()
     }
@@ -154,6 +158,14 @@ function displayLeaderboard() {
     tmiClient.say(twitchChannel, `MF LEADERBOARD: ${Object.entries(leaderboard)
         .sort(([, scoreA], [, scoreB]) => scoreB - scoreA)
         .map(([key, value]) => `${key} - ${value}`)
+        .join(', ')
+    }`)
+}
+
+function displayMotsAssigned(pseudo) {
+    tmiClient.say(twitchChannel, `MF pour ${pseudo}: ${assignedMots
+        .filter((assignedMot) => assignedMot.pseudo === pseudo)
+        .map(({definition, mot}) => `${definition} - [${mot}]`)
         .join(', ')
     }`)
 }
