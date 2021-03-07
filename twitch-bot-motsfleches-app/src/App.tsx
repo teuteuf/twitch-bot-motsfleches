@@ -37,17 +37,19 @@ function App() {
             <ul>
                 {assignedMots.map((assignedMot, index) => (
                     <li key={index}>
-                        <AssignedMotItem assignedMot={assignedMot} />
+                        <AssignedMotItem assignedMot={assignedMot}/>
                     </li>
                 ))}
             </ul>
             Leaderboard:
             <ul>
-                {Object.entries(leaderboard).map(([key, value]) => (
-                    <li key={key}>
-                        {key} - {value}
-                    </li>
-                ))}
+                {Object.entries(leaderboard)
+                    .sort(([, scoreA], [, scoreB]) => scoreB - scoreA)
+                    .map(([key, value]) => (
+                        <li key={key}>
+                            {key} - {value}
+                        </li>
+                    ))}
             </ul>
         </div>
     );

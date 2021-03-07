@@ -151,7 +151,11 @@ function approveMot({pseudo, definition, mot, guess}) {
 }
 
 function displayLeaderboard() {
-    tmiClient.say(twitchChannel, `MF LEADERBOARD: ${Object.entries(leaderboard).map(([key, value]) => `${key} - ${value}`).join(', ')}`)
+    tmiClient.say(twitchChannel, `MF LEADERBOARD: ${Object.entries(leaderboard)
+        .sort(([, scoreA], [, scoreB]) => scoreB - scoreA)
+        .map(([key, value]) => `${key} - ${value}`)
+        .join(', ')
+    }`)
 }
 
 function updateJSONs() {
