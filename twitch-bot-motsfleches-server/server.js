@@ -115,7 +115,7 @@ function assignMot({pseudo, definition, mot}) {
 
         assignedMots.push({pseudo, definition, mot, guess: ''})
         io.emit('assignedMots', assignedMots)
-        tmiClient.say(twitchChannel, `MOT POUR ${pseudo}: ${definition} - [${mot}] (pour envoyer une réponse: !mf REPONSE)`)
+        tmiClient.say(twitchChannel, `MOT POUR ${pseudo}: ${definition} - [${mot}] (pour envoyer une réponse: !mf REPONSE, leaderboard: !mfl)`)
 
         updateJSONs()
     }
