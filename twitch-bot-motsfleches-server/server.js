@@ -85,11 +85,11 @@ tmiClient.on('message', (channel, tags, message, self) => {
         addWaitingUser(tags.username)
     }
 
-    if (message.startsWith('!mc ')) {
-        tryGuess(tags.username, message.replace('!mc ', ''))
+    if (message.startsWith('!mf ')) {
+        tryGuess(tags.username, message.replace('!mf ', ''))
     }
 
-    if (message === '!mcl') {
+    if (message === '!mfl') {
         displayLeaderboard()
     }
 });
@@ -115,7 +115,7 @@ function assignMot({pseudo, definition, mot}) {
 
         assignedMots.push({pseudo, definition, mot, guess: ''})
         io.emit('assignedMots', assignedMots)
-        tmiClient.say(twitchChannel, `MOT POUR ${pseudo}: ${definition} - [${mot}] (pour envoyer une réponse: !mc REPONSE)`)
+        tmiClient.say(twitchChannel, `MOT POUR ${pseudo}: ${definition} - [${mot}] (pour envoyer une réponse: !mf REPONSE)`)
 
         updateJSONs()
     }
@@ -151,7 +151,7 @@ function approveMot({pseudo, definition, mot, guess}) {
 }
 
 function displayLeaderboard() {
-    tmiClient.say(twitchChannel, `MC LEADERBOARD: ${Object.entries(leaderboard).map(([key, value]) => `${key} - ${value}`).join(', ')}`)
+    tmiClient.say(twitchChannel, `MF LEADERBOARD: ${Object.entries(leaderboard).map(([key, value]) => `${key} - ${value}`).join(', ')}`)
 }
 
 function updateJSONs() {
