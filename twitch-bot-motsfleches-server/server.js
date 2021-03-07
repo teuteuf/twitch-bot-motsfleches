@@ -26,8 +26,8 @@ const appUrl = process.env.APP_URL;
 
 
 const options = {
-    key: fs.readFileSync('key.pem'),
-    cert: fs.readFileSync('cert.pem')
+    key: fs.readFileSync('./data/key.pem'),
+    cert: fs.readFileSync('./data/cert.pem')
 };
 
 const app = express();
