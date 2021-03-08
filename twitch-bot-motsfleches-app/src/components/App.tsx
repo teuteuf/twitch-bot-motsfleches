@@ -4,7 +4,7 @@ import {socket} from "../socketio";
 import AssignedMotItem from "./AssignedMotItem";
 import Section from "./Section";
 import WaitingUsers from "./WaitingUsers";
-import krabbyImg from "./images/krabby.png"
+import pacotilleImg from "./images/pacotille.png"
 
 export interface AssignedMot {
     pseudo: string
@@ -29,8 +29,9 @@ function App() {
         <div className={classes.App}>
             <div className={classes.wrapper}>
                 <h1 className={classes.title}>
+                    <img src={pacotilleImg} alt="Krabby Logo"/>
                     <span>Dealer de Mots</span>
-                    <img src={krabbyImg} alt="Krabby Logo"/>
+                    <img src={pacotilleImg} alt="Krabby Logo"/>
                 </h1>
                 <div className={classes.container}>
                     <Section title="Utilisateurs en attente">
