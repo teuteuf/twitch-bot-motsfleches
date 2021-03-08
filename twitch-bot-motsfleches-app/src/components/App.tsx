@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import classes from './App.module.css';
 import {socket} from "../socketio";
-import AssignedMotItem from "./AssignedMotItem";
 import Section from "./Section";
 import WaitingUsers from "./WaitingUsers";
 import pacotilleImg from "./images/pacotille.png"
+import AssignedMots from "./AssignedMots";
+import Leaderboard from "./Leaderboard";
 
 export interface AssignedMot {
     pseudo: string
@@ -38,24 +39,10 @@ function App() {
                         <WaitingUsers waitingUsers={waitingUsers} />
                     </Section>
                     <Section title="Mots en attente">
-                        <ul>
-                            {assignedMots.map((assignedMot, index) => (
-                                <li key={index}>
-                                    <AssignedMotItem assignedMot={assignedMot}/>
-                                </li>
-                            ))}
-                        </ul>
+                        <AssignedMots assignedMots={assignedMots} />
                     </Section>
                     <Section title="Leaderboard">
-                        <ul>
-                            {Object.entries(leaderboard)
-                                .sort(([, scoreA], [, scoreB]) => scoreB - scoreA)
-                                .map(([key, value]) => (
-                                    <li key={key}>
-                                        {key} - {value}
-                                    </li>
-                                ))}
-                        </ul>
+                        <Leaderboard leaderboard={leaderboard} />
                     </Section>
                 </div>
             </div>
