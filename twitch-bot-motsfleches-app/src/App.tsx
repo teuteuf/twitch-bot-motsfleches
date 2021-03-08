@@ -25,6 +25,7 @@ function App() {
 
     return (
         <div className={classes.App}>
+            <h1>Dealer de Mots</h1>
             Waiting users:
             <ul>
                 {waitingUsers.map((waitingUser, index) => (
