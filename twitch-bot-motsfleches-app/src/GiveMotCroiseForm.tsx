@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useRef} from 'react'
 import {socket} from "./socketio";
 
 interface GiveMotCroiseFormProps {
@@ -6,6 +6,8 @@ interface GiveMotCroiseFormProps {
 }
 
 function GiveMotCroiseForm({pseudo}: GiveMotCroiseFormProps) {
+
+    const formRef = useRef<HTMLFormElement | null>(null)
 
     const handleSubmit = (e: any) => {
         e.preventDefault()
@@ -16,10 +18,11 @@ function GiveMotCroiseForm({pseudo}: GiveMotCroiseFormProps) {
             mot: mot.value
         }
         socket.emit('assignMot', assignMot)
+        formRef.current?.reset()
     }
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form ref={formRef} onSubmit={handleSubmit}>
             <input name='pseudo' value={pseudo} disabled/>
             <input name='definition' placeholder='definition'/>
             <input name='mot' placeholder='mot ex: C..COU'/>
