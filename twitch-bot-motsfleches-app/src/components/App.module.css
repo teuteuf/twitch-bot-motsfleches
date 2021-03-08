@@ -1,0 +1,43 @@
+.App {
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f8f0fb;
+    font-family: Roboto, sans-serif;
+}
+
+.wrapper {
+    flex: 0 1 80em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-left: solid #cad5ca 1px;
+    border-right: solid #cad5ca 1px;
+}
+
+.container {
+    width: 100%;
+}
+
+.title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5em;
+    width: 100%;
+    background-color: #211A1D;
+    border-radius: 0 0.1em 0.1em;
+    margin-bottom: 0.75em;
+}
+
+.title span {
+    color: #f8f0fb;
+    font-size: 2rem;
+    font-weight: bolder;
+    text-transform: uppercase;
+}
+
+.title img {
+    max-height: 2em;
+    margin: 0 0.5em;
+}

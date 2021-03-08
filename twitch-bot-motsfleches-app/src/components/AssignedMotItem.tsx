@@ -1,5 +1,5 @@
 import {AssignedMot} from "./App";
-import {socket} from "./socketio";
+import {socket} from "../socketio";
 
 interface AssignedMotItemProps {
     assignedMot: AssignedMot

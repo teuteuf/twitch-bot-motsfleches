@@ -1,5 +1,5 @@
 import React, {useRef} from 'react'
-import {socket} from "./socketio";
+import {socket} from "../socketio";
 
 interface GiveMotCroiseFormProps {
     pseudo: string
