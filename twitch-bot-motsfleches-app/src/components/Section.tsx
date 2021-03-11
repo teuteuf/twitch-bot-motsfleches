@@ -18,7 +18,7 @@ function Section({title, minimizedByDefault, children}: SectionProps) {
                 </button>
             </h2>
             {!minimized && (
-                <div>
+                <div className={classes.content}>
                     {children}
                 </div>
             )}

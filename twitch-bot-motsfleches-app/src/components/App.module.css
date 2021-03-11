@@ -1,22 +1,26 @@
 .App {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     min-height: 100vh;
-    background-color: #f8f0fb;
     font-family: Roboto, sans-serif;
 }
 
 .wrapper {
-    flex: 0 1 80em;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    border-left: solid #cad5ca 1px;
-    border-right: solid #cad5ca 1px;
+    flex-direction: row;
 }
 
-.container {
-    width: 100%;
+@media screen and (max-width: 1200px) {
+    .wrapper {
+        flex-direction: column-reverse;
+    }
+}
+
+.sidePanel {
+}
+
+.mainPanel {
+    flex: 1;
 }
 
 .title {
@@ -30,14 +34,14 @@
     margin-bottom: 0.75em;
 }
 
-.title span {
+.title > span {
     color: #f8f0fb;
     font-size: 2rem;
     font-weight: bolder;
     text-transform: uppercase;
 }
 
-.title img {
+.title > img {
     max-height: 2em;
     margin: 0 0.5em;
 }

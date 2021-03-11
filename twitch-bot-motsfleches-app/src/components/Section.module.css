@@ -4,27 +4,33 @@
     margin: 0 0.5em 0.5em;
     border: solid #8075FF 1px;
     border-radius: 0 0.2em 0.2em;
+    background-color: #f8f0fb;
 }
 
-.section h2 {
+.section > h2 {
     display: flex;
     align-items: center;
     padding: 0.5em 1em;
     background-color: #6320EE;
 }
 
-.section h2 span {
+.section > h2 > span {
     flex: 1;
+    padding-right: 1em;
     font-size: 1.2rem;
     font-weight: bold;
     text-transform: uppercase;
     color: #f8f0fb;
 }
 
-.section h2 button {
+.section > h2 > button {
     background-color: #cad5ca;
     color: black;
     border: solid #cad5ca;
     width: 2em;
     height: 2em;
+}
+
+.content {
+    padding: 0.5em;
 }

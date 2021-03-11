@@ -28,21 +28,23 @@ function App() {
 
     return (
         <div className={classes.App}>
+            <h1 className={classes.title}>
+                <img src={pacotilleImg} alt="Krabby Logo"/>
+                <span>Dealer de Mots</span>
+                <img src={pacotilleImg} alt="Krabby Logo"/>
+            </h1>
             <div className={classes.wrapper}>
-                <h1 className={classes.title}>
-                    <img src={pacotilleImg} alt="Krabby Logo"/>
-                    <span>Dealer de Mots</span>
-                    <img src={pacotilleImg} alt="Krabby Logo"/>
-                </h1>
-                <div className={classes.container}>
+                <div className={classes.sidePanel}>
+                    <Section title="Leaderboard">
+                        <Leaderboard leaderboard={leaderboard}/>
+                    </Section>
+                </div>
+                <div className={classes.mainPanel}>
                     <Section title="Utilisateurs en attente">
-                        <WaitingUsers waitingUsers={waitingUsers} />
+                        <WaitingUsers waitingUsers={waitingUsers}/>
                     </Section>
                     <Section title="Mots en attente">
-                        <AssignedMots assignedMots={assignedMots} />
-                    </Section>
-                    <Section title="Leaderboard">
-                        <Leaderboard leaderboard={leaderboard} />
+                        <AssignedMots assignedMots={assignedMots}/>
                     </Section>
                 </div>
             </div>
