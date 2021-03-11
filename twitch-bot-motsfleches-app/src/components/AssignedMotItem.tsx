@@ -30,8 +30,8 @@ export default function AssignedMotItem ({assignedMot: {pseudo, definition, mot,
             <input className={classes.mot} value={updatedMot} onChange={(e) => setUpdatedMot(e.target.value)}/>
             <input className={classes.guess} value={guess} disabled placeholder="¯\_(ツ)_/¯"/>
             <button type="button" onClick={handleUpdate}>UPDATE</button>
-            <button type="button" onClick={handleApprove}>SUPPRIMER</button>
-            <button type="button" onClick={handleDelete}>VALIDER</button>
+            <button type="button" onClick={handleDelete}>SUPPRIMER</button>
+            <button type="button" onClick={handleApprove}>VALIDER</button>
         </div>
     )
 }
