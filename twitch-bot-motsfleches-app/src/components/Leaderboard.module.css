@@ -1,0 +1,25 @@
+.leaderboard {
+    counter-reset: leaderboard;
+}
+
+
+.leaderboard > li:before {
+    counter-increment: leaderboard;
+    content: counter(leaderboard) " -";
+    margin-right: 0.4em;
+}
+
+.leaderboard > li {
+    display: flex;
+    margin-bottom: 0.5em;
+    padding: 0.5em;
+    background-color: white;
+}
+
+.pseudo {
+    flex: 1;
+}
+
+.points {
+    font-style: italic;
+}
