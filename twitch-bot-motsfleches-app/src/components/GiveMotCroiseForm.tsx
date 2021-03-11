@@ -1,5 +1,6 @@
 import React, {useRef} from 'react'
 import {socket} from "../socketio";
+import classes from "./GiveMotCroiseForm.module.css"
 
 interface GiveMotCroiseFormProps {
     pseudo: string
@@ -22,10 +23,14 @@ function GiveMotCroiseForm({pseudo}: GiveMotCroiseFormProps) {
     }
 
     return (
-        <form ref={formRef} onSubmit={handleSubmit}>
+        <form
+            className={classes.form}
+            ref={formRef}
+            onSubmit={handleSubmit}
+        >
             <input name='pseudo' value={pseudo} disabled/>
-            <input name='definition' placeholder='definition'/>
-            <input name='mot' placeholder='mot ex: C..COU'/>
+            <input className={classes.definition} name='definition' placeholder='définition'/>
+            <input className={classes.mot} name='mot' placeholder='C _ _ C O U'/>
             <button type='submit'>ENVOYER</button>
         </form>
     )

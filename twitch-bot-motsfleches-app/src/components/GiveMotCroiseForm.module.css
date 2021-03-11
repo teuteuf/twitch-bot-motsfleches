@@ -1,0 +1,22 @@
+.form {
+    display: flex;
+}
+
+.form > input, .form > button {
+    margin: 0.25em;
+    padding: 0.25em;
+}
+
+.form button {
+    background-color: #cad5ca;
+    color: black;
+    border: solid #cad5ca;
+}
+
+.definition {
+    flex: 1;
+}
+
+.mot {
+    flex: 1
+}
