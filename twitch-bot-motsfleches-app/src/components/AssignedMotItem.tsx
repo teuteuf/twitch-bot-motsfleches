@@ -1,5 +1,6 @@
 import {AssignedMot} from "./App";
 import {socket} from "../socketio";
+import classes from "./AssignedMotItem.module.css"
 
 interface AssignedMotItemProps {
     assignedMot: AssignedMot
@@ -12,8 +13,11 @@ export default function AssignedMotItem ({assignedMot: {pseudo, definition, mot,
     }
 
     return (
-        <div>
-            <div>{`${pseudo} - ${definition} - ${mot} : ${guess}`}</div>
+        <div className={classes.assignedMot}>
+            <input value={pseudo} disabled/>
+            <input className={classes.definition} value={definition} disabled/>
+            <input className={classes.mot} value={mot} disabled/>
+            <input className={classes.guess} value={guess} disabled/>
             <button type="button" onClick={handleApprove}>APPROVE</button>
         </div>
     )
