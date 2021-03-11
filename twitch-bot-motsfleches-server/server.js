@@ -74,6 +74,7 @@ io.on('connection', (socket) => {
     socket.emit('leaderboard', leaderboard)
     socket.on('assignMot', assignMot);
     socket.on('approveMot', approveMot);
+    socket.on('deleteAssignedMot', deleteAssignedMot);
 });
 
 tmiClient.on('message', (channel, tags, message, self) => {
@@ -150,6 +151,15 @@ function approveMot({pseudo, definition, mot, guess}) {
     }
 
     io.emit('leaderboard', leaderboard)
+
+    updateJSONs()
+}
+
+function deleteAssignedMot({pseudo, definition, mot, guess}) {
+    const approvedIndex = assignedMots.findIndex(assignedMot => assignedMot.pseudo === pseudo && assignedMot.mot === mot);
+    assignedMots.splice(approvedIndex, 1)
+
+    io.emit('assignedMots', assignedMots)
 
     updateJSONs()
 }

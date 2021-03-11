@@ -12,13 +12,18 @@ export default function AssignedMotItem ({assignedMot: {pseudo, definition, mot,
         socket.emit('approveMot', {pseudo, definition, mot, guess})
     }
 
+    const handleDelete = () => {
+        socket.emit('deleteAssignedMot', {pseudo, definition, mot, guess})
+    }
+
     return (
         <div className={classes.assignedMot}>
             <input value={pseudo} disabled/>
             <input className={classes.definition} value={definition} disabled/>
             <input className={classes.mot} value={mot} disabled/>
-            <input className={classes.guess} value={guess} disabled/>
-            <button type="button" onClick={handleApprove}>APPROVE</button>
+            <input className={classes.guess} value={guess} disabled placeholder="¯\_(ツ)_/¯"/>
+            <button type="button" onClick={handleApprove}>SUPPRIMER</button>
+            <button type="button" onClick={handleDelete}>VALIDER</button>
         </div>
     )
 }
