@@ -75,6 +75,7 @@ io.on('connection', (socket) => {
     socket.on('assignMot', assignMot);
     socket.on('approveMot', approveMot);
     socket.on('deleteAssignedMot', deleteAssignedMot);
+    socket.on('updateAssignedMot', updateAssignedMot);
 });
 
 tmiClient.on('message', (channel, tags, message, self) => {
@@ -120,7 +121,7 @@ function assignMot({pseudo, definition, mot}) {
 
         assignedMots.push({pseudo, definition, mot, guess: ''})
         io.emit('assignedMots', assignedMots)
-        tmiClient.say(twitchChannel, `MOT POUR ${pseudo}: ${definition} - [${mot}] (pour envoyer une réponse: !mf REPONSE, leaderboard: !mfl, mots assignés: !mf)`)
+        tmiClient.say(twitchChannel, `MOT POUR ${pseudo} : ${definition} - [${mot}] (pour envoyer une réponse: !mf REPONSE, leaderboard: !mfl, mots assignés: !mf)`)
 
         updateJSONs()
     }
@@ -155,13 +156,23 @@ function approveMot({pseudo, definition, mot, guess}) {
     updateJSONs()
 }
 
-function deleteAssignedMot({pseudo, definition, mot, guess}) {
+function deleteAssignedMot({pseudo, mot}) {
     const approvedIndex = assignedMots.findIndex(assignedMot => assignedMot.pseudo === pseudo && assignedMot.mot === mot);
     assignedMots.splice(approvedIndex, 1)
 
     io.emit('assignedMots', assignedMots)
 
     updateJSONs()
+}
+
+function updateAssignedMot({pseudo, mot, updatedMot, definition}) {
+    const updateIndex = assignedMots.findIndex(assignedMot => assignedMot.pseudo === pseudo && assignedMot.mot === mot);
+    assignedMots[updateIndex].mot = updatedMot
+
+    io.emit('assignedMots', assignedMots)
+
+    tmiClient.say(twitchChannel, `Mise à jour du mot de ${pseudo} : ${definition} - [${updatedMot}]`)
+
 }
 
 function displayLeaderboard() {
