@@ -16,7 +16,7 @@ export default function AssignedMotItem ({assignedMot: {pseudo, definition, mot,
     }
 
     const handleDelete = () => {
-        socket.emit('deleteAssignedMot', {pseudo, mot})
+        socket.emit('deleteAssignedMot', {pseudo, mot, definition})
     }
 
     const handleUpdate = () => {

@@ -140,7 +140,7 @@ function tryGuess(username, guess) {
 
 function approveMot({pseudo, definition, mot, guess}) {
     console.log(`Mot approved for ${pseudo} (${definition} - ${mot} - ${guess})`)
-    const approvedIndex = assignedMots.findIndex(assignedMot => assignedMot.pseudo === pseudo && assignedMot.mot === mot);
+    const approvedIndex = findAssignedMotIndex(pseudo, mot, definition);
     assignedMots.splice(approvedIndex, 1)
 
     io.emit('assignedMots', assignedMots)
@@ -158,9 +158,9 @@ function approveMot({pseudo, definition, mot, guess}) {
     updateJSONs()
 }
 
-function deleteAssignedMot({pseudo, mot}) {
+function deleteAssignedMot({pseudo, mot, definition}) {
     console.log(`Delete mot of ${pseudo}: ${mot}`)
-    const approvedIndex = assignedMots.findIndex(assignedMot => assignedMot.pseudo === pseudo && assignedMot.mot === mot);
+    const approvedIndex = findAssignedMotIndex(pseudo, mot, definition);
     assignedMots.splice(approvedIndex, 1)
 
     io.emit('assignedMots', assignedMots)
@@ -170,7 +170,7 @@ function deleteAssignedMot({pseudo, mot}) {
 
 function updateAssignedMot({pseudo, mot, updatedMot, definition}) {
     console.log(`Update assigned mot of ${pseudo}: ${definition} - ${mot} > ${updatedMot}`)
-    const updateIndex = assignedMots.findIndex(assignedMot => assignedMot.pseudo === pseudo && assignedMot.mot === mot);
+    const updateIndex = findAssignedMotIndex(pseudo, mot, definition);
     assignedMots[updateIndex].mot = updatedMot
 
     io.emit('assignedMots', assignedMots)
@@ -195,6 +195,14 @@ function displayMotsAssigned(pseudo) {
         .map(({definition, mot}) => `${definition} - [${mot}]`)
         .join(', ')
     }`)
+}
+
+function findAssignedMotIndex(pseudo, mot, definition) {
+    return assignedMots.findIndex(assignedMot =>
+        assignedMot.pseudo === pseudo
+        && assignedMot.mot === mot
+        && assignedMot.definition === definition
+    )
 }
 
 function updateJSONs() {
