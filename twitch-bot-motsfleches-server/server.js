@@ -81,8 +81,6 @@ io.on('connection', (socket) => {
 tmiClient.on('message', (channel, tags, message, self) => {
     if (self) return;
 
-    console.log({channel, tags, message})
-
     if (message === '!test' && tags.username === testUsername) {
         addWaitingUser(tags.username)
     }
@@ -107,6 +105,7 @@ pubSubClient.onRedemption(userId, ({rewardId, userName}) => {
 }).catch(console.error);
 
 function addWaitingUser(username) {
+    console.log(`New waiting user: ${username}`)
     waitingUsers.push(username)
     io.emit('waitingUsers', waitingUsers)
 
@@ -114,6 +113,7 @@ function addWaitingUser(username) {
 }
 
 function assignMot({pseudo, definition, mot}) {
+    console.log(`Word assigned to ${pseudo}: ${definition} - ${mot}`)
     const userIndex = waitingUsers.findIndex((user) => user === pseudo);
     if (userIndex >= 0) {
         waitingUsers.splice(userIndex, 1)
@@ -128,6 +128,7 @@ function assignMot({pseudo, definition, mot}) {
 }
 
 function tryGuess(username, guess) {
+    console.log(`${username} has added a guess: ${guess}`)
     assignedMots
         .filter(assignedMot => assignedMot.pseudo === username)
         .forEach(assignedMot => assignedMot.guess = guess)
@@ -138,6 +139,7 @@ function tryGuess(username, guess) {
 }
 
 function approveMot({pseudo, definition, mot, guess}) {
+    console.log(`Mot approved for ${pseudo} (${definition} - ${mot} - ${guess})`)
     const approvedIndex = assignedMots.findIndex(assignedMot => assignedMot.pseudo === pseudo && assignedMot.mot === mot);
     assignedMots.splice(approvedIndex, 1)
 
@@ -157,6 +159,7 @@ function approveMot({pseudo, definition, mot, guess}) {
 }
 
 function deleteAssignedMot({pseudo, mot}) {
+    console.log(`Delete mot of ${pseudo}: ${mot}`)
     const approvedIndex = assignedMots.findIndex(assignedMot => assignedMot.pseudo === pseudo && assignedMot.mot === mot);
     assignedMots.splice(approvedIndex, 1)
 
@@ -166,6 +169,7 @@ function deleteAssignedMot({pseudo, mot}) {
 }
 
 function updateAssignedMot({pseudo, mot, updatedMot, definition}) {
+    console.log(`Update assigned mot of ${pseudo}: ${definition} - ${mot} > ${updatedMot}`)
     const updateIndex = assignedMots.findIndex(assignedMot => assignedMot.pseudo === pseudo && assignedMot.mot === mot);
     assignedMots[updateIndex].mot = updatedMot
 
@@ -176,14 +180,16 @@ function updateAssignedMot({pseudo, mot, updatedMot, definition}) {
 }
 
 function displayLeaderboard() {
+    console.log(`Displaying leaderboard...`)
     tmiClient.say(twitchChannel, `MF LEADERBOARD: ${Object.entries(leaderboard)
         .sort(([, scoreA], [, scoreB]) => scoreB - scoreA)
-        .map(([key, value]) => `${key} - ${value}`)
+        .map(([pseudo, score], index) => `${index + 1}. ${pseudo} (${score}${score > 1 ? 'pts' : 'pt'})`)
         .join(', ')
     }`)
 }
 
 function displayMotsAssigned(pseudo) {
+    console.log(`Displaying mots for ${pseudo}`)
     tmiClient.say(twitchChannel, `MF pour ${pseudo}: ${assignedMots
         .filter((assignedMot) => assignedMot.pseudo === pseudo)
         .map(({definition, mot}) => `${definition} - [${mot}]`)
@@ -192,6 +198,7 @@ function displayMotsAssigned(pseudo) {
 }
 
 function updateJSONs() {
+    console.log('Updating JSON files')
     fs.writeFileSync('./data/waitingUsers.json', JSON.stringify(waitingUsers))
     fs.writeFileSync('./data/assignedMots.json', JSON.stringify(assignedMots))
     fs.writeFileSync('./data/leaderboard.json', JSON.stringify(leaderboard))
