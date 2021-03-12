@@ -60,7 +60,7 @@ server.listen(serverPort, () => {
 
 const waitingUsers = parseFileOrDefault('./data/waitingUsers.json', [])
 const assignedMots = parseFileOrDefault('./data/assignedMots.json', [])
-const leaderboard = parseFileOrDefault('./data/leaderboard.json', {})
+let leaderboard = parseFileOrDefault('./data/leaderboard.json', {})
 
 function parseFileOrDefault(path, defaultValue) {
     return fs.existsSync(path)
@@ -76,6 +76,7 @@ io.on('connection', (socket) => {
     socket.on('approveMot', approveMot);
     socket.on('deleteAssignedMot', deleteAssignedMot);
     socket.on('updateAssignedMot', updateAssignedMot);
+    socket.on('updateLeaderboard', updateLeaderboard)
 });
 
 tmiClient.on('message', (channel, tags, message, self) => {
@@ -176,7 +177,12 @@ function updateAssignedMot({pseudo, mot, updatedMot, definition}) {
     io.emit('assignedMots', assignedMots)
 
     tmiClient.say(twitchChannel, `Mise à jour du mot de ${pseudo} : ${definition} - [${updatedMot}]`)
+}
 
+function updateLeaderboard(updatedLeaderboard) {
+    leaderboard = updatedLeaderboard
+    io.emit('leaderboard', leaderboard);
+    updateJSONs()
 }
 
 function displayLeaderboard() {

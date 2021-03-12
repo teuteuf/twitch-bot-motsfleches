@@ -24,9 +24,6 @@
 }
 
 .section > h2 > button {
-    background-color: #cad5ca;
-    color: black;
-    border: solid #cad5ca;
     width: 2em;
     height: 2em;
 }

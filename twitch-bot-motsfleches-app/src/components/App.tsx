@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import classes from './App.module.css';
 import {socket} from "../socketio";
 import Section from "./Section";
@@ -26,17 +26,26 @@ function App() {
         socket.on('leaderboard', setLeaderboard);
     }, [])
 
+    const handleUpdateUserScore = useCallback((pseudo, updatedScore) => {
+        setLeaderboard(prevLeaderboard => {
+            return {
+                ...prevLeaderboard,
+                [pseudo]: updatedScore
+            }
+        })
+    }, [])
+
     return (
         <div className={classes.App}>
             <h1 className={classes.title}>
-                <img src={pacotilleImg} alt="Krabby Logo"/>
+                <img src={pacotilleImg} alt="Pacotille Logo"/>
                 <span>Dealer de Mots</span>
-                <img src={pacotilleImg} alt="Krabby Logo"/>
+                <img src={pacotilleImg} alt="Pacotille Logo"/>
             </h1>
             <div className={classes.wrapper}>
                 <div className={classes.sidePanel}>
                     <Section title="Leaderboard">
-                        <Leaderboard leaderboard={leaderboard}/>
+                        <Leaderboard leaderboard={leaderboard} onUpdateUserScore={handleUpdateUserScore}/>
                     </Section>
                 </div>
                 <div className={classes.mainPanel}>
