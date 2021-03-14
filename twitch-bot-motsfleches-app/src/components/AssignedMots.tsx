@@ -9,8 +9,8 @@ interface AssignedMotsProps {
 function AssignedMots({assignedMots}: AssignedMotsProps) {
     return (
         <ul>
-            {assignedMots.map((assignedMot, index) => (
-                <li key={index}>
+            {assignedMots.map((assignedMot) => (
+                <li key={`${assignedMot.pseudo}-${assignedMot.definition}-${assignedMot.mot}`}>
                     <AssignedMotItem assignedMot={assignedMot}/>
                 </li>
             ))}

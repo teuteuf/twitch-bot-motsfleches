@@ -8,7 +8,7 @@ function WaitingUsers({waitingUsers}: WaitingUsersProps) {
     return (
         <ul>
             {waitingUsers.map((waitingUser, index) => (
-                <li key={index}>
+                <li key={`${waitingUser}-${index}`}>
                     <GiveMotCroiseForm pseudo={waitingUser}/>
                 </li>
             ))}
