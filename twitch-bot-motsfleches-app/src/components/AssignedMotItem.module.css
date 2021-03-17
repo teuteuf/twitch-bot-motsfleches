@@ -17,7 +17,7 @@
     flex: 1
 }
 
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1250px) {
     .assignedMot {
         margin: 0.5em 0;
         flex-direction: column;
