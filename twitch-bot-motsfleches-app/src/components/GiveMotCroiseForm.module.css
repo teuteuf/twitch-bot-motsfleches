@@ -1,9 +1,11 @@
 .form {
+    margin: 0.25em 0;
     display: flex;
+    flex-direction: row;
 }
 
 .form > input, .form > button {
-    margin: 0.25em;
+    margin: 0 0.25em;
     padding: 0.25em;
 }
 
@@ -13,4 +15,16 @@
 
 .mot {
     flex: 1
+}
+
+@media screen and (max-width: 1200px) {
+    .form {
+        margin: 0.5em 0;
+        flex-direction: column;
+    }
+
+    .form > input, .form > button {
+        margin: 0;
+        padding: 0.25em;
+    }
 }
