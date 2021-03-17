@@ -12,6 +12,7 @@ export interface AssignedMot {
     definition: string
     mot: string
     guess: string
+    answer?: string
 }
 
 function App() {

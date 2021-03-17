@@ -9,12 +9,8 @@
     padding: 0.25em;
 }
 
-.definition {
+.definition, .mot, .answer {
     flex: 1;
-}
-
-.mot {
-    flex: 1
 }
 
 @media screen and (max-width: 1200px) {

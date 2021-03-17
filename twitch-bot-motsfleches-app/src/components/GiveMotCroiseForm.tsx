@@ -12,11 +12,12 @@ function GiveMotCroiseForm({pseudo}: GiveMotCroiseFormProps) {
 
     const handleSubmit = (e: any) => {
         e.preventDefault()
-        const {pseudo, definition, mot} = e.target
+        const {pseudo, definition, mot, answer} = e.target
         const assignMot = {
             pseudo: pseudo.value,
             definition: definition.value,
-            mot: mot.value
+            mot: mot.value,
+            answer: answer.value
         }
         socket.emit('assignMot', assignMot)
         formRef.current?.reset()
@@ -32,6 +33,7 @@ function GiveMotCroiseForm({pseudo}: GiveMotCroiseFormProps) {
             <input name='pseudo' value={pseudo} disabled/>
             <input className={classes.definition} name='definition' placeholder='définition' autoComplete="false"/>
             <input className={classes.mot} name='mot' placeholder='C _ _ C O U'/>
+            <input className={classes.answer} name='answer' placeholder='réponse'/>
             <button type='submit'>ENVOYER</button>
         </form>
     )

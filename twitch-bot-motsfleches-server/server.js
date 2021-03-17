@@ -113,14 +113,14 @@ function addWaitingUser(username) {
     updateJSONs()
 }
 
-function assignMot({pseudo, definition, mot}) {
+function assignMot({pseudo, definition, mot, answer}) {
     console.log(`Word assigned to ${pseudo}: ${definition} - ${mot}`)
     const userIndex = waitingUsers.findIndex((user) => user === pseudo);
     if (userIndex >= 0) {
         waitingUsers.splice(userIndex, 1)
         io.emit('waitingUsers', waitingUsers)
 
-        assignedMots.push({pseudo, definition, mot, guess: ''})
+        assignedMots.push({pseudo, definition, mot, guess: '', answer})
         io.emit('assignedMots', assignedMots)
         tmiClient.say(twitchChannel, `MOT POUR ${pseudo} : ${definition} - [ ${mot} ] (pour envoyer une réponse: !mf REPONSE, leaderboard: !mfl, mots assignés: !mf)`)
 
@@ -128,15 +128,21 @@ function assignMot({pseudo, definition, mot}) {
     }
 }
 
-function tryGuess(username, guess) {
-    console.log(`${username} has added a guess: ${guess}`)
-    assignedMots
-        .filter(assignedMot => assignedMot.pseudo === username)
-        .forEach(assignedMot => assignedMot.guess = guess)
+function tryGuess(pseudo, guess) {
+    console.log(`${pseudo} has added a guess: ${guess}`)
+
+    const pseudoAssignedMots = assignedMots.filter(assignedMot => assignedMot.pseudo === pseudo);
+    pseudoAssignedMots.forEach(assignedMot => assignedMot.guess = guess)
 
     io.emit('assignedMots', assignedMots)
 
     updateJSONs()
+
+    pseudoAssignedMots.forEach(({pseudo, definition, mot, guess, answer}) => {
+        if (answer != null && sanitizeMot(guess).includes(sanitizeMot(answer))) {
+            approveMot({pseudo, definition, mot, guess})
+        }
+    })
 }
 
 function approveMot({pseudo, definition, mot, guess}) {
@@ -209,6 +215,10 @@ function findAssignedMotIndex(pseudo, mot, definition) {
         && assignedMot.mot === mot
         && assignedMot.definition === definition
     )
+}
+
+function sanitizeMot(mot) {
+    return mot.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
 }
 
 function updateJSONs() {

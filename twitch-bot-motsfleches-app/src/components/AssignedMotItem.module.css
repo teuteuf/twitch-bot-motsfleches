@@ -10,10 +10,10 @@
 }
 
 .definition {
-    flex: 2;
+    flex: 3;
 }
 
-.mot, .guess {
+.mot, .guess, .answer {
     flex: 1
 }
 
