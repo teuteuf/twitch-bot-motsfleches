@@ -6,6 +6,7 @@ import WaitingUsers from "./WaitingUsers";
 import pacotilleImg from "./images/pacotille.png"
 import AssignedMots from "./AssignedMots";
 import Leaderboard from "./Leaderboard";
+import AvailableMots from "./AvailableMots";
 
 export interface AssignedMot {
     pseudo: string
@@ -15,16 +16,24 @@ export interface AssignedMot {
     answer?: string
 }
 
+export interface AvailableMot {
+    definition: string
+    mot: string
+    answer?: string
+}
+
 function App() {
 
     const [waitingUsers, setWaitingUsers] = useState<string[]>([])
     const [assignedMots, setAssignedMots] = useState<AssignedMot[]>([])
     const [leaderboard, setLeaderboard] = useState<Record<string, number>>({})
+    const [availableMots, setAvailableMots] = useState<AvailableMot[]>([])
 
     useEffect(() => {
         socket.on("waitingUsers", setWaitingUsers);
         socket.on('assignedMots', setAssignedMots);
         socket.on('leaderboard', setLeaderboard);
+        socket.on('availableMots', setAvailableMots)
     }, [])
 
     const handleUpdateUserScore = useCallback((pseudo, updatedScore) => {
@@ -50,6 +59,9 @@ function App() {
                     </Section>
                 </div>
                 <div className={classes.mainPanel}>
+                    <Section title="Mots disponibles">
+                        <AvailableMots availableMots={availableMots} />
+                    </Section>
                     <Section title="Utilisateurs en attente">
                         <WaitingUsers waitingUsers={waitingUsers}/>
                     </Section>

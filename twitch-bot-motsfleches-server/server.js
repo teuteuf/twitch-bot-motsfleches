@@ -61,6 +61,7 @@ server.listen(serverPort, () => {
 const waitingUsers = parseFileOrDefault('./data/waitingUsers.json', [])
 const assignedMots = parseFileOrDefault('./data/assignedMots.json', [])
 let leaderboard = parseFileOrDefault('./data/leaderboard.json', {})
+const availableMots = parseFileOrDefault('./data/availableMots.json', [])
 
 function parseFileOrDefault(path, defaultValue) {
     return fs.existsSync(path)
@@ -71,12 +72,16 @@ function parseFileOrDefault(path, defaultValue) {
 io.on('connection', (socket) => {
     socket.emit('waitingUsers', waitingUsers);
     socket.emit('assignedMots', assignedMots);
-    socket.emit('leaderboard', leaderboard)
+    socket.emit('leaderboard', leaderboard);
+    socket.emit('availableMots', availableMots)
+
     socket.on('assignMot', assignMot);
     socket.on('approveMot', approveMot);
     socket.on('deleteAssignedMot', deleteAssignedMot);
     socket.on('updateAssignedMot', updateAssignedMot);
-    socket.on('updateLeaderboard', updateLeaderboard)
+    socket.on('updateLeaderboard', updateLeaderboard);
+    socket.on('addAvailableMot', addAvailableMot);
+    socket.on('deleteAvailableMot', deleteAvailableMot);
 });
 
 tmiClient.on('message', (channel, tags, message, self) => {
@@ -209,6 +214,23 @@ function displayMotsAssigned(pseudo) {
     }`)
 }
 
+function addAvailableMot({definition, mot, answer}) {
+    console.log(`Add available mot : "${definition}" - [ ${mot} ] (${answer})`)
+    availableMots.push({definition, mot, answer})
+    io.emit('availableMots', availableMots)
+    updateJSONs()
+}
+
+function deleteAvailableMot({definition, mot, answer}) {
+    console.log(`Delete available mot "${definition}" - [${mot}] (${answer})`)
+    const motIndex = availableMots.findIndex(availableMot => availableMot.definition === definition && availableMot.mot === mot);
+    availableMots.splice(motIndex, 1)
+
+    io.emit('availableMots', availableMots)
+
+    updateJSONs()
+}
+
 function findAssignedMotIndex(pseudo, mot, definition) {
     return assignedMots.findIndex(assignedMot =>
         assignedMot.pseudo === pseudo
@@ -226,4 +248,5 @@ function updateJSONs() {
     fs.writeFileSync('./data/waitingUsers.json', JSON.stringify(waitingUsers))
     fs.writeFileSync('./data/assignedMots.json', JSON.stringify(assignedMots))
     fs.writeFileSync('./data/leaderboard.json', JSON.stringify(leaderboard))
+    fs.writeFileSync('./data/availableMots.json', JSON.stringify(availableMots))
 }
