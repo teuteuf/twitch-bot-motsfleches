@@ -110,10 +110,16 @@ pubSubClient.onRedemption(userId, ({rewardId, userName}) => {
     }
 }).catch(console.error);
 
-function addWaitingUser(username) {
-    console.log(`New waiting user: ${username}`)
-    waitingUsers.push(username)
+function addWaitingUser(pseudo) {
+    console.log(`New waiting user: ${pseudo}`)
+    waitingUsers.push(pseudo)
     io.emit('waitingUsers', waitingUsers)
+
+    if (availableMots.length > 0) {
+        const {definition, mot, answer} = availableMots[Math.floor(Math.random() * availableMots.length)]
+        assignMot({pseudo, definition, mot, answer })
+        deleteAvailableMot({definition, mot, answer})
+    }
 
     updateJSONs()
 }
