@@ -7,7 +7,11 @@
 .availableMot > input, .availableMot > button {
     margin: 0 0.25em;
     padding: 0.25em;
-    min-width: 5em;
+    min-width: 6em;
+}
+
+.availableMot > input {
+    width: 0;
 }
 
 .definition {
@@ -28,7 +32,7 @@
     background-color: white;
 }
 
-@media screen and (max-width: 1250px) {
+@media screen and (max-width: 900px) {
     .availableMot {
         margin: 0.5em 0;
         flex-direction: column;
@@ -37,5 +41,6 @@
     .availableMot > input, .availableMot > button {
         margin: 0;
         padding: 0.25em;
+        width: auto;
     }
 }

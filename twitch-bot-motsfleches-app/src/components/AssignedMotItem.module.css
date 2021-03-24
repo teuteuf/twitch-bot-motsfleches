@@ -9,11 +9,15 @@
     padding: 0.25em;
 }
 
-.definition {
-    flex: 3;
+.assignedMot > input {
+    width: 0;
 }
 
-.mot, .guess, .answer {
+.definition {
+    flex: 2;
+}
+
+.pseudo, .mot, .guess, .answer {
     flex: 1
 }
 
@@ -27,7 +31,7 @@
     background-color: white;
 }
 
-@media screen and (max-width: 1250px) {
+@media screen and (max-width: 900px) {
     .assignedMot {
         margin: 0.5em 0;
         flex-direction: column;
@@ -36,5 +40,6 @@
     .assignedMot > input, .assignedMot > button {
         margin: 0;
         padding: 0.25em;
+        width: auto;
     }
 }

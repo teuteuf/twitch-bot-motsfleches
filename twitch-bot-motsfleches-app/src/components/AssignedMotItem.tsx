@@ -25,7 +25,7 @@ export default function AssignedMotItem ({assignedMot: {pseudo, definition, mot,
 
     return (
         <div className={classes.assignedMot}>
-            <input value={pseudo} disabled/>
+            <input className={classes.pseudo} value={pseudo} disabled/>
             <input className={classes.definition} value={definition} disabled/>
             <input className={classes.mot} value={updatedMot} onChange={(e) => setUpdatedMot(e.target.value)}/>
             <input className={classes.guess} value={guess} disabled placeholder="¯\_(ツ)_/¯"/>

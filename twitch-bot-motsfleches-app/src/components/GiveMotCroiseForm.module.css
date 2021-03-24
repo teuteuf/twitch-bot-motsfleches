@@ -9,11 +9,19 @@
     padding: 0.25em;
 }
 
-.definition, .mot, .answer {
+.form > input {
+    width: 0;
+}
+
+.definition {
+    flex: 2;
+}
+
+.pseudo, .mot, .answer {
     flex: 1;
 }
 
-@media screen and (max-width: 1250px) {
+@media screen and (max-width: 900px) {
     .form {
         margin: 0.5em 0;
         flex-direction: column;
@@ -22,5 +30,6 @@
     .form > input, .form > button {
         margin: 0;
         padding: 0.25em;
+        width: auto;
     }
 }

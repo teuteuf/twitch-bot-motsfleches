@@ -30,7 +30,7 @@ function GiveMotCroiseForm({pseudo}: GiveMotCroiseFormProps) {
             onSubmit={handleSubmit}
             autoComplete="off"
         >
-            <input name='pseudo' value={pseudo} disabled/>
+            <input className={classes.pseudo} name='pseudo' value={pseudo} disabled/>
             <input className={classes.definition} name='definition' placeholder='définition'/>
             <input className={classes.mot} name='mot' placeholder='C _ _ C O U'/>
             <input className={classes.answer} name='answer' placeholder='réponse'/>
