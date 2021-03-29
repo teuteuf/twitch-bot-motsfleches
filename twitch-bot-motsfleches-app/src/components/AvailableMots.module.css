@@ -1,16 +1,16 @@
-.form {
+.singleForm {
     margin: 0.25em 0;
     display: flex;
     flex-direction: row;
 }
 
-.form > input, .form > button {
+.singleForm > input, .singleForm > button {
     margin: 0 0.25em;
     padding: 0.25em;
     min-width: 6em;
 }
 
-.form > input {
+.singleForm > input {
     width: 0;
 }
 
@@ -22,13 +22,25 @@
     flex: 1;
 }
 
+.multipleForm {
+    margin: 0.5em 0.25em 0;
+    padding-top: 0.5em;
+    border-top: solid #211A1D 1px;
+    display: flex;
+    flex-direction: column;
+}
+
+.multipleForm button {
+    margin-top: 0.25em;
+}
+
 @media screen and (max-width: 900px) {
-    .form {
+    .singleForm {
         margin: 0.5em 0;
         flex-direction: column;
     }
 
-    .form > input, .form > button {
+    .singleForm > input, .singleForm > button {
         margin: 0;
         padding: 0.25em;
         width: auto;

@@ -9,9 +9,10 @@ interface AvailableMotsProps {
 }
 
 function AvailableMots({availableMots}: AvailableMotsProps) {
-    const formRef = useRef<HTMLFormElement | null>(null)
+    const singleFormRef = useRef<HTMLFormElement | null>(null)
+    const multipleFormRef = useRef<HTMLFormElement | null>(null)
 
-    const handleSubmit = (e: any) => {
+    const handleSingleSubmit = (e: any) => {
         e.preventDefault()
         const {definition, mot, answer} = e.target
         const availableMot = {
@@ -20,24 +21,40 @@ function AvailableMots({availableMots}: AvailableMotsProps) {
             answer: answer.value
         }
         socket.emit('addAvailableMot', availableMot)
-        formRef.current?.reset()
+        singleFormRef.current?.reset()
+    }
+
+    const handleMultipleSubmit = (e: any) => {
+        e.preventDefault()
+        const {csvContent} = e.target
+        socket.emit('addAvailableMotsCsv', csvContent.value)
+        multipleFormRef.current?.reset()
     }
 
     return (
         <div>
             {availableMots.map((mot, index) => (
-                <AvailableMotItem availableMot={mot} />
+                <AvailableMotItem key={`${index}-${mot.definition}`} availableMot={mot} />
             ))}
             <form
-                className={classes.form}
-                ref={formRef}
-                onSubmit={handleSubmit}
+                className={classes.singleForm}
+                ref={singleFormRef}
+                onSubmit={handleSingleSubmit}
                 autoComplete='off'
             >
                 <input className={classes.definition} name='definition' placeholder='définition'/>
                 <input className={classes.mot} name='mot' placeholder='C _ _ C O U'/>
                 <input className={classes.answer} name='answer' placeholder='réponse'/>
                 <button type='submit'>AJOUTER</button>
+            </form>
+            <form
+                className={classes.multipleForm}
+                ref={multipleFormRef}
+                onSubmit={handleMultipleSubmit}
+                autoComplete='off'
+            >
+                <textarea name='csvContent' placeholder={'réponse{TAB}définition\nréponse (7){TAB}définition\n...'}/>
+                <button type='submit'>AJOUTER EN MASSE</button>
             </form>
         </div>
     )

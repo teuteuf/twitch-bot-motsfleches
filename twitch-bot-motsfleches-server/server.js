@@ -81,6 +81,7 @@ io.on('connection', (socket) => {
     socket.on('updateAssignedMot', updateAssignedMot);
     socket.on('updateLeaderboard', updateLeaderboard);
     socket.on('addAvailableMot', addAvailableMot);
+    socket.on('addAvailableMotsCsv', addAvailableMotsCsv);
     socket.on('deleteAvailableMot', deleteAvailableMot);
 });
 
@@ -223,6 +224,31 @@ function displayMotsAssigned(pseudo) {
 function addAvailableMot({definition, mot, answer}) {
     console.log(`Add available mot : "${definition}" - [ ${mot} ] (${answer})`)
     availableMots.push({definition, mot, answer})
+    io.emit('availableMots', availableMots)
+    updateJSONs()
+}
+
+function addAvailableMotsCsv(csvContent) {
+    console.log(`Add available mots csv:\n${csvContent}`)
+
+    const newMots = csvContent
+        .split('\n')
+        .map(line => line.split('\t'))
+        .filter(splitLine => splitLine.length === 2 && splitLine[0].trim().length > 0 && splitLine[1].trim().length > 0)
+        .map(splitLine => {
+            const answer = splitLine[0].replace(/ \(\d*\)/, '')
+            const definition = `${splitLine[1]} (${answer.length})`
+            const mot = '_'.repeat(answer.length).split('').join(' ')
+
+            return {
+                answer,
+                definition,
+                mot
+            }
+        })
+
+    availableMots.push(...newMots)
+
     io.emit('availableMots', availableMots)
     updateJSONs()
 }
