@@ -59,14 +59,14 @@ function App() {
                     </Section>
                 </div>
                 <div className={classes.mainPanel}>
-                    <Section title="Mots disponibles">
-                        <AvailableMots availableMots={availableMots} />
-                    </Section>
-                    <Section title="Utilisateurs en attente">
+                    <Section title={`Utilisateurs en attente (${waitingUsers.length})`}>
                         <WaitingUsers waitingUsers={waitingUsers}/>
                     </Section>
-                    <Section title="Mots en attente">
+                    <Section title={`Mots en attente (${assignedMots.length})`}>
                         <AssignedMots assignedMots={assignedMots}/>
+                    </Section>
+                    <Section title={`Mots disponibles (${availableMots.length})`}>
+                        <AvailableMots availableMots={availableMots} />
                     </Section>
                 </div>
             </div>
