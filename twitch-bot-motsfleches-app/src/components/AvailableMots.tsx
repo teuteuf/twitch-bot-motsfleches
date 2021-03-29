@@ -53,7 +53,13 @@ function AvailableMots({availableMots}: AvailableMotsProps) {
                 onSubmit={handleMultipleSubmit}
                 autoComplete='off'
             >
-                <textarea name='csvContent' placeholder={'réponse{TAB}définition\nréponse (7){TAB}définition\n...'}/>
+                <textarea name='csvContent' placeholder={
+`réponse{TAB}définition
+réponse (7){TAB}définition
+...
+Compatible avec copié/collé des solutions des grilles de https://www.mots-croises.ch
+(grille > solutions > "Décroisés. Solution en liste")`
+                }/>
                 <button type='submit'>AJOUTER EN MASSE</button>
             </form>
         </div>

@@ -30,6 +30,10 @@
     flex-direction: column;
 }
 
+.multipleForm textarea {
+    min-height: 8em;
+}
+
 .multipleForm button {
     margin-top: 0.25em;
 }
