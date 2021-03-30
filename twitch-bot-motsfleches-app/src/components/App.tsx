@@ -28,12 +28,14 @@ function App() {
     const [assignedMots, setAssignedMots] = useState<AssignedMot[]>([])
     const [leaderboard, setLeaderboard] = useState<Record<string, number>>({})
     const [availableMots, setAvailableMots] = useState<AvailableMot[]>([])
+    const [autoAssignEnabled, setAutoAssignEnabled] = useState(false)
 
     useEffect(() => {
         socket.on("waitingUsers", setWaitingUsers);
         socket.on('assignedMots', setAssignedMots);
         socket.on('leaderboard', setLeaderboard);
         socket.on('availableMots', setAvailableMots)
+        socket.on('autoAssignEnabled', setAutoAssignEnabled)
     }, [])
 
     const handleUpdateUserScore = useCallback((pseudo, updatedScore) => {
@@ -60,7 +62,7 @@ function App() {
                 </div>
                 <div className={classes.mainPanel}>
                     <Section title={`Utilisateurs en attente (${waitingUsers.length})`}>
-                        <WaitingUsers waitingUsers={waitingUsers}/>
+                        <WaitingUsers waitingUsers={waitingUsers} autoAssignEnabled={autoAssignEnabled}/>
                     </Section>
                     <Section title={`Mots en attente (${assignedMots.length})`}>
                         <AssignedMots assignedMots={assignedMots}/>
