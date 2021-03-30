@@ -238,7 +238,16 @@ function addAvailableMotsCsv(csvContent) {
         .map(splitLine => {
             const answer = splitLine[0].replace(/ \(\d*\)/, '')
             const definition = `${splitLine[1]} (${answer.length})`
-            const mot = '_'.repeat(answer.length).split('').join(' ')
+            const splitMot = '_'.repeat(answer.length).split('');
+
+            const hintCount = answer.length <= 3 ? 0 : Math.ceil(answer.length / 5)
+            const letterIndexes = Array.from(splitMot.keys())
+            for (let i = 0; i < hintCount; i++) {
+                const pickedIndex = letterIndexes.splice(Math.floor(Math.random() * letterIndexes.length), 1)[0];
+                splitMot[pickedIndex] = answer.charAt(pickedIndex)
+            }
+
+            const mot = splitMot.join(' ')
 
             return {
                 answer,
