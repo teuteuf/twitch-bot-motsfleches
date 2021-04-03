@@ -138,14 +138,39 @@ function addWaitingUser(pseudo) {
     console.log(`New waiting user: ${pseudo}`)
     waitingUsers.push(pseudo)
     io.emit('waitingUsers', waitingUsers)
+    updateJSONs()
 
-    if (autoAssignEnabled && availableMots.length > 0) {
-        const {definition, mot, answer} = availableMots[Math.floor(Math.random() * availableMots.length)]
-        assignMot({pseudo, definition, mot, answer })
-        deleteAvailableMot({definition, mot, answer})
+    if (autoAssignEnabled) {
+        tryToAutoAssignMot(pseudo);
+    }
+}
+
+function tryToAutoAssignMot(pseudo) {
+    let selectedAvailableMots = []
+
+    const userListName = listsSettings.userLists[pseudo];
+    if (userListName != null) {
+        selectedAvailableMots = availableMots.filter(({listName}) => listName === userListName)
     }
 
-    updateJSONs()
+    const { defaultList } = listsSettings
+    if (defaultList != null && selectedAvailableMots.length === 0) {
+        selectedAvailableMots = availableMots.filter(({listName}) => listName === defaultList)
+    }
+
+    if (selectedAvailableMots.length === 0) {
+        selectedAvailableMots = availableMots.filter(({listName}) => listName == null)
+    }
+
+    if (selectedAvailableMots.length === 0) {
+        selectedAvailableMots = availableMots
+    }
+
+    if (selectedAvailableMots.length > 0) {
+        const {definition, mot, answer} = selectedAvailableMots[Math.floor(Math.random() * selectedAvailableMots.length)]
+        assignMot({pseudo, definition, mot, answer})
+        deleteAvailableMot({definition, mot, answer})
+    }
 }
 
 function assignMot({pseudo, definition, mot, answer}) {
