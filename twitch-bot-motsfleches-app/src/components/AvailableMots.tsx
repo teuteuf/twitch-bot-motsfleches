@@ -1,4 +1,4 @@
-import {AvailableMot} from "./App";
+import {AvailableMot, ListsSettings} from "./App";
 import React, {useRef} from "react";
 import {socket} from "../socketio";
 import AvailableMotItem from "./AvailableMotItem";
@@ -6,9 +6,10 @@ import classes from "./AvailableMots.module.css"
 
 interface AvailableMotsProps {
     availableMots: AvailableMot[]
+    listsSettings: ListsSettings
 }
 
-function AvailableMots({availableMots}: AvailableMotsProps) {
+function AvailableMots({availableMots, listsSettings}: AvailableMotsProps) {
     const singleFormRef = useRef<HTMLFormElement | null>(null)
     const multipleFormRef = useRef<HTMLFormElement | null>(null)
 
@@ -34,7 +35,11 @@ function AvailableMots({availableMots}: AvailableMotsProps) {
     return (
         <div>
             {availableMots.map((mot, index) => (
-                <AvailableMotItem key={`${index}-${mot.definition}`} availableMot={mot} />
+                <AvailableMotItem
+                    key={`${index}-${mot.definition}`}
+                    availableMot={mot}
+                    listsSettings={listsSettings}
+                />
             ))}
             <form
                 className={classes.singleForm}

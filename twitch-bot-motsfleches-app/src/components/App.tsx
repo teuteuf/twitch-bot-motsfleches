@@ -7,6 +7,7 @@ import pacotilleImg from "./images/pacotille.png"
 import AssignedMots from "./AssignedMots";
 import Leaderboard from "./Leaderboard";
 import AvailableMots from "./AvailableMots";
+import ListsSettingsSection from "./ListsSettingsSection";
 
 export interface AssignedMot {
     pseudo: string
@@ -20,6 +21,13 @@ export interface AvailableMot {
     definition: string
     mot: string
     answer?: string
+    listName?: string
+}
+
+export interface ListsSettings {
+    availableLists: string[]
+    defaultList?: string
+    userLists: Record<string, string | null>
 }
 
 function App() {
@@ -29,6 +37,7 @@ function App() {
     const [leaderboard, setLeaderboard] = useState<Record<string, number>>({})
     const [availableMots, setAvailableMots] = useState<AvailableMot[]>([])
     const [autoAssignEnabled, setAutoAssignEnabled] = useState(false)
+    const [listsSettings, setListsSettings] = useState<ListsSettings>({availableLists: [], userLists: {}})
 
     useEffect(() => {
         socket.on("waitingUsers", setWaitingUsers);
@@ -36,6 +45,7 @@ function App() {
         socket.on('leaderboard', setLeaderboard);
         socket.on('availableMots', setAvailableMots)
         socket.on('autoAssignEnabled', setAutoAssignEnabled)
+        socket.on('listsSettings', setListsSettings)
     }, [])
 
     const handleUpdateUserScore = useCallback((pseudo, updatedScore) => {
@@ -62,13 +72,23 @@ function App() {
                 </div>
                 <div className={classes.mainPanel}>
                     <Section title={`Utilisateurs en attente (${waitingUsers.length})`}>
-                        <WaitingUsers waitingUsers={waitingUsers} autoAssignEnabled={autoAssignEnabled}/>
+                        <WaitingUsers
+                            waitingUsers={waitingUsers}
+                            autoAssignEnabled={autoAssignEnabled}
+                            listsSettings={listsSettings}
+                        />
                     </Section>
                     <Section title={`Mots en attente (${assignedMots.length})`}>
                         <AssignedMots assignedMots={assignedMots}/>
                     </Section>
+                    <Section title={`Listes de mots (${listsSettings.availableLists.length})`}>
+                        <ListsSettingsSection listsSettings={listsSettings} />
+                    </Section>
                     <Section title={`Mots disponibles (${availableMots.length})`}>
-                        <AvailableMots availableMots={availableMots} />
+                        <AvailableMots
+                            availableMots={availableMots}
+                            listsSettings={listsSettings}
+                        />
                     </Section>
                 </div>
             </div>

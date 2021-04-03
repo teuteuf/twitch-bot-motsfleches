@@ -63,11 +63,25 @@ const assignedMots = parseFileOrDefault('./data/assignedMots.json', [])
 let leaderboard = parseFileOrDefault('./data/leaderboard.json', {})
 const availableMots = parseFileOrDefault('./data/availableMots.json', [])
 let autoAssignEnabled = parseFileOrDefault('./data/autoAssignEnabled.json', true)
+const listsSettings = parseFileOrDefault(
+    './data/listsSettings.json',
+    {availableLists: [], defaultList: null, userLists: {}}
+)
 
 function parseFileOrDefault(path, defaultValue) {
     return fs.existsSync(path)
         ? JSON.parse(fs.readFileSync(path, 'utf8'))
         : defaultValue
+}
+
+function updateJSONs() {
+    console.log('Updating JSON files')
+    fs.writeFileSync('./data/waitingUsers.json', JSON.stringify(waitingUsers))
+    fs.writeFileSync('./data/assignedMots.json', JSON.stringify(assignedMots))
+    fs.writeFileSync('./data/leaderboard.json', JSON.stringify(leaderboard))
+    fs.writeFileSync('./data/availableMots.json', JSON.stringify(availableMots))
+    fs.writeFileSync('./data/autoAssignEnabled.json', JSON.stringify(autoAssignEnabled))
+    fs.writeFileSync('./data/listsSettings.json', JSON.stringify(listsSettings))
 }
 
 io.on('connection', (socket) => {
@@ -76,6 +90,7 @@ io.on('connection', (socket) => {
     socket.emit('leaderboard', leaderboard);
     socket.emit('availableMots', availableMots)
     socket.emit('autoAssignEnabled', autoAssignEnabled)
+    socket.emit('listsSettings', listsSettings)
 
     socket.on('assignMot', assignMot);
     socket.on('approveMot', approveMot);
@@ -86,6 +101,11 @@ io.on('connection', (socket) => {
     socket.on('addAvailableMotsCsv', addAvailableMotsCsv);
     socket.on('deleteAvailableMot', deleteAvailableMot);
     socket.on('setAutoAssignEnabled', setAutoAssignEnabled);
+    socket.on('addNewList', addNewList);
+    socket.on('removeList', removeList);
+    socket.on('setDefaultList', setDefaultList);
+    socket.on('setUserList', setUserList);
+    socket.on('setAvailableMotListName', setAvailableMotListName)
 });
 
 tmiClient.on('message', (channel, tags, message, self) => {
@@ -282,6 +302,44 @@ function setAutoAssignEnabled(value) {
     updateJSONs()
 }
 
+function addNewList (listName) {
+    console.log(`Add new list ${listName}`);
+    listsSettings.availableLists.push(listName)
+    io.emit('listsSettings', listsSettings)
+    updateJSONs()
+}
+
+function removeList (listName) {
+    console.log(`Remove list ${listName}`);
+    listsSettings.availableLists = listsSettings.availableLists.filter(list => list !== listName)
+    io.emit('listsSettings', listsSettings)
+    updateJSONs()
+}
+
+function setDefaultList (listName) {
+    console.log(`Set default list: ${listName}`);
+    listsSettings.defaultList = listName
+    io.emit('listsSettings', listsSettings)
+    updateJSONs()
+}
+
+function setUserList ({pseudo, listName}) {
+    console.log(`Set list for ${pseudo}: ${listName}`);
+    listsSettings.userLists[pseudo] = listName
+    io.emit('listsSettings', listsSettings)
+    updateJSONs()
+}
+
+function setAvailableMotListName ({definition, mot, listName}) {
+    console.log(`Set list [${listName}] for available mot: ${definition} - [ ${mot} ]`)
+    const availableMotToUpdate = availableMots.find(availableMot =>
+        availableMot.definition === definition && availableMot.mot === mot
+    );
+    availableMotToUpdate.listName = listName
+    io.emit('availableMots', availableMots)
+    updateJSONs()
+}
+
 function findAssignedMotIndex(pseudo, mot, definition) {
     return assignedMots.findIndex(assignedMot =>
         assignedMot.pseudo === pseudo
@@ -292,13 +350,4 @@ function findAssignedMotIndex(pseudo, mot, definition) {
 
 function sanitizeMot(mot) {
     return mot.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
-}
-
-function updateJSONs() {
-    console.log('Updating JSON files')
-    fs.writeFileSync('./data/waitingUsers.json', JSON.stringify(waitingUsers))
-    fs.writeFileSync('./data/assignedMots.json', JSON.stringify(assignedMots))
-    fs.writeFileSync('./data/leaderboard.json', JSON.stringify(leaderboard))
-    fs.writeFileSync('./data/availableMots.json', JSON.stringify(availableMots))
-    fs.writeFileSync('./data/autoAssignEnabled.json', JSON.stringify(autoAssignEnabled))
 }

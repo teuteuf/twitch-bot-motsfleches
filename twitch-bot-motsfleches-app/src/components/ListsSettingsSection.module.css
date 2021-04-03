@@ -1,0 +1,54 @@
+.wrapper {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.lists {
+    flex: 1 0 30em;
+    display: flex;
+    flex-direction: column;
+    margin: 0.25em;
+    background-color: white;
+    border: solid #211A1D 1px;
+}
+
+.lists > h2 {
+    font-size: 1.2rem;
+    padding: 0.25em;
+    margin-bottom: 0.5em;
+    border-bottom: solid #211A1D 1px;
+}
+
+.lists > ul {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.lists > ul > li {
+    margin: 0.25em;
+    border: solid #211A1D 1px;
+}
+
+.lists > ul > li > span {
+    margin: 0.25em;
+}
+
+.lists > ul > li > button {
+    font-size: 0.75rem;
+}
+
+.lists > form {
+    display: flex;
+    margin: 0.5em;
+}
+
+.lists > form > input {
+    flex: 2;
+}
+
+.lists > form > select {
+    flex: 1;
+}
