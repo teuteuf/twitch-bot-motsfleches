@@ -11,6 +11,7 @@ import {ApiClient as TwitchApiClient} from 'twitch';
 import {StaticAuthProvider as TwitchStaticAuthProvider} from 'twitch-auth';
 import fs from 'fs'
 import dotenv from 'dotenv'
+import {DateTime} from "luxon";
 
 dotenv.config()
 
@@ -67,6 +68,10 @@ const listsSettings = parseFileOrDefault(
     './data/listsSettings.json',
     {availableLists: [], defaultList: null, userLists: {}}
 )
+let currentRush = parseFileOrDefault('./data/currentRush.json', null)
+if (currentRush != null) {
+    setTimeout(stopCurrentRush, currentRush.endTime - DateTime.now().toMillis())
+}
 
 function parseFileOrDefault(path, defaultValue) {
     return fs.existsSync(path)
@@ -82,6 +87,7 @@ function updateJSONs() {
     fs.writeFileSync('./data/availableMots.json', JSON.stringify(availableMots))
     fs.writeFileSync('./data/autoAssignEnabled.json', JSON.stringify(autoAssignEnabled))
     fs.writeFileSync('./data/listsSettings.json', JSON.stringify(listsSettings))
+    fs.writeFileSync('./data/currentRush.json', JSON.stringify((currentRush)))
 }
 
 io.on('connection', (socket) => {
@@ -91,6 +97,7 @@ io.on('connection', (socket) => {
     socket.emit('availableMots', availableMots)
     socket.emit('autoAssignEnabled', autoAssignEnabled)
     socket.emit('listsSettings', listsSettings)
+    socket.emit('currentRush', currentRush)
 
     socket.on('assignMot', assignMot);
     socket.on('approveMot', approveMot);
@@ -106,6 +113,7 @@ io.on('connection', (socket) => {
     socket.on('setDefaultList', setDefaultList);
     socket.on('setUserList', setUserList);
     socket.on('setAvailableMotListName', setAvailableMotListName)
+    socket.on('startNewRush', startNewRush)
 });
 
 tmiClient.on('message', (channel, tags, message, self) => {
@@ -115,8 +123,20 @@ tmiClient.on('message', (channel, tags, message, self) => {
         addWaitingUser(tags.username)
     }
 
+    if (message === '!testrush' && tags.username === testUsername) {
+        startNewRush({
+            durationInMinutes: 1,
+            listName: 'rush',
+            simultaneousMotsCount: 3,
+            maxMotsCount: 10
+        })
+    }
+
     if (message.startsWith('!mf ')) {
         tryGuess(tags.username, message.replace('!mf ', ''))
+        if (currentRush != null) {
+            tryGuessRush(tags.username, message.replace('!mf ', ''))
+        }
     }
 
     if (message === '!mfl') {
@@ -125,6 +145,10 @@ tmiClient.on('message', (channel, tags, message, self) => {
 
     if (message === '!mf') {
         displayMotsAssigned(tags.username)
+    }
+
+    if (message === '!mfr') {
+        displayCurrentRushInfos()
     }
 });
 
@@ -363,6 +387,113 @@ function setAvailableMotListName ({definition, mot, listName}) {
     availableMotToUpdate.listName = listName
     io.emit('availableMots', availableMots)
     updateJSONs()
+}
+
+function startNewRush({durationInMinutes, listName, simultaneousMotsCount, maxMotsCount}) {
+    console.log(`Start new rush: ${durationInMinutes} minutes, list ${listName ?? 'default'}, ${maxMotsCount} words and ${simultaneousMotsCount} simultaneous mots!`)
+    currentRush = {
+        durationInMinutes,
+        listName,
+        simultaneousMotsCount,
+        maxMotsCount,
+        startTime: DateTime.now().toMillis(),
+        endTime: DateTime.now().plus({ minutes: durationInMinutes }).toMillis(),
+        remainingMotsCount: maxMotsCount,
+        currentMots: [],
+        contributions: {}
+    }
+
+    tmiClient.say(twitchChannel, `MF RUSH - Début d'un rush de ${durationInMinutes} minutes et ${maxMotsCount} mots !`)
+
+    refillMotsCurrentRush()
+
+    setTimeout(stopCurrentRush, durationInMinutes * 60 * 1000)
+
+    updateJSONs()
+}
+
+function stopCurrentRush() {
+    if (currentRush != null) {
+        console.log('Stop current rush...')
+        const {remainingMotsCount, currentMots} = currentRush
+        tmiClient.say(twitchChannel, `MF RUSH - Temps écoulé ! Il restait ${remainingMotsCount + currentMots.length} mots...`)
+        displayCurrentRushContribution()
+        currentRush = null
+
+        updateJSONs()
+    }
+}
+
+function refillMotsCurrentRush() {
+    const {currentMots, simultaneousMotsCount, listName, remainingMotsCount} = currentRush
+    for (let i = currentMots.length; i < simultaneousMotsCount && remainingMotsCount > 0; i++) {
+        let rushAvailableMots = []
+
+        if (listName != null) {
+            rushAvailableMots = availableMots.filter(availableMot => availableMot.listName === listName)
+        }
+
+        if (rushAvailableMots.length === 0) {
+            rushAvailableMots = availableMots.filter(availableMot => availableMot.listName == null)
+        }
+
+        if (rushAvailableMots.length === 0) {
+            rushAvailableMots = availableMots
+        }
+
+        if (rushAvailableMots.length > 0) {
+            const {definition, mot, answer} = rushAvailableMots[Math.floor(Math.random() * rushAvailableMots.length)]
+            currentMots.push({definition, mot, answer})
+            currentRush.remainingMotsCount--
+            deleteAvailableMot({definition, mot, answer})
+            tmiClient.say(twitchChannel, `MF RUSH - NOUVEAU MOT : ${definition} - [ ${mot} ] (pour envoyer une réponse: !mf REPONSE, infos du rush: !mfr)`)
+        }
+    }
+}
+
+function tryGuessRush(pseudo, guess) {
+    console.log(`MF RUSH - ${pseudo} try a guess: ${guess}`)
+
+    currentRush.currentMots.forEach(({definition, mot, answer}) => {
+        if (sanitizeMot(guess).includes(sanitizeMot(answer))) {
+            tmiClient.say(twitchChannel, `MF RUSH - GG ${pseudo}! ${definition} - [ ${answer} ] !`)
+
+            currentRush.contributions[pseudo] = (currentRush.contributions[pseudo] ?? 0) + 1
+
+            const foundMotIndex = currentRush.currentMots.findIndex(currentMot =>
+                currentMot.definition === definition && currentMot.mot === mot
+            );
+            currentRush.currentMots.splice(foundMotIndex, 1)
+
+            refillMotsCurrentRush()
+        }
+    })
+
+    if (currentRush.currentMots.length === 0) {
+        tmiClient.say(twitchChannel, `MF RUSH - GG à tous ! Tous les mots ont été trouvés !`)
+        displayCurrentRushContribution();
+        currentRush = null
+    }
+
+    updateJSONs()
+}
+
+function displayCurrentRushContribution() {
+    tmiClient.say(twitchChannel, `CONTRIBUTIONS: ${Object.entries(currentRush.contributions)
+        .sort(([, scoreA], [, scoreB]) => scoreB - scoreA)
+        .map(([pseudo, score], index) => `${index + 1}. ${pseudo} (${score}${score > 1 ? 'pts' : 'pt'})`)
+        .join(', ')
+    }`)
+}
+
+function displayCurrentRushInfos() {
+    if (currentRush != null) {
+        tmiClient.say(twitchChannel, `MF RUSH - Mots en cours : ${currentRush.currentMots
+            .map(({definition, mot}) => `${definition} - [ ${mot} ]`)
+            .join(', ')} (mots restants : ${currentRush.remainingMotsCount + currentRush.currentMots.length})`)
+    } else {
+
+    }
 }
 
 function findAssignedMotIndex(pseudo, mot, definition) {
