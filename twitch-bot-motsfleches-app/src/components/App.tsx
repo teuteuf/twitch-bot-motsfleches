@@ -8,6 +8,7 @@ import AssignedMots from "./AssignedMots";
 import Leaderboard from "./Leaderboard";
 import AvailableMots from "./AvailableMots";
 import ListsSettingsSection from "./ListsSettingsSection";
+import SetupRush from "./SetupRush";
 
 export interface AssignedMot {
     pseudo: string
@@ -30,6 +31,18 @@ export interface ListsSettings {
     userLists: Record<string, string | null>
 }
 
+export interface CurrentRush {
+    durationInMinutes: number
+    listName?: string
+    simultaneousMotsCount: number
+    maxMotsCount: number
+    startTime: number
+    endTime: number
+    remainingMotsCount: number
+    currentMots: AvailableMot[]
+    contributions: Record<string, number>
+}
+
 function App() {
 
     const [waitingUsers, setWaitingUsers] = useState<string[]>([])
@@ -38,6 +51,7 @@ function App() {
     const [availableMots, setAvailableMots] = useState<AvailableMot[]>([])
     const [autoAssignEnabled, setAutoAssignEnabled] = useState(false)
     const [listsSettings, setListsSettings] = useState<ListsSettings>({availableLists: [], userLists: {}})
+    const [currentRush, setCurrentRush] = useState<CurrentRush | null>(null)
 
     useEffect(() => {
         socket.on("waitingUsers", setWaitingUsers);
@@ -46,6 +60,7 @@ function App() {
         socket.on('availableMots', setAvailableMots)
         socket.on('autoAssignEnabled', setAutoAssignEnabled)
         socket.on('listsSettings', setListsSettings)
+        socket.on('currentRush', setCurrentRush)
     }, [])
 
     const handleUpdateUserScore = useCallback((pseudo, updatedScore) => {
@@ -83,6 +98,9 @@ function App() {
                     </Section>
                     <Section title={`Listes de mots (${listsSettings.availableLists.length})`}>
                         <ListsSettingsSection listsSettings={listsSettings} />
+                    </Section>
+                    <Section title={`MF Rush ${currentRush != null ? '(en cours)' : ''}`}>
+                        <SetupRush currentRush={currentRush} listsSettings={listsSettings}/>
                     </Section>
                     <Section title={`Mots disponibles (${availableMots.length})`}>
                         <AvailableMots

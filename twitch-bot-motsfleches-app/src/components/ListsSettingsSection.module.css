@@ -47,8 +47,17 @@
 
 .lists > form > input {
     flex: 2;
+    margin: 0.25em;
+    padding: 0.25em;
 }
 
 .lists > form > select {
     flex: 1;
+    margin: 0.25em;
+    padding: 0.25em;
+}
+
+.lists > form > button {
+    margin: 0.25em;
+    padding: 0.25em;
 }

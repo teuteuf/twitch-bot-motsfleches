@@ -1,0 +1,14 @@
+.newRushForm {
+    display: flex;
+    flex-direction: column;
+}
+
+.newRushForm > * {
+    flex: 1;
+    margin: 0.25em;
+    padding: 0.25em;
+}
+
+.runningRush {
+
+}

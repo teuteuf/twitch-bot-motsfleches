@@ -409,6 +409,8 @@ function startNewRush({durationInMinutes, listName, simultaneousMotsCount, maxMo
 
     setTimeout(stopCurrentRush, durationInMinutes * 60 * 1000)
 
+    io.emit('currentRush', currentRush)
+
     updateJSONs()
 }
 
@@ -419,6 +421,8 @@ function stopCurrentRush() {
         tmiClient.say(twitchChannel, `MF RUSH - Temps écoulé ! Il restait ${remainingMotsCount + currentMots.length} mots...`)
         displayCurrentRushContribution()
         currentRush = null
+
+        io.emit('currentRush', currentRush)
 
         updateJSONs()
     }
@@ -449,6 +453,8 @@ function refillMotsCurrentRush() {
             tmiClient.say(twitchChannel, `MF RUSH - NOUVEAU MOT : ${definition} - [ ${mot} ] (pour envoyer une réponse: !mf REPONSE, infos du rush: !mfr)`)
         }
     }
+
+    io.emit('currentRush', currentRush)
 }
 
 function tryGuessRush(pseudo, guess) {
@@ -475,6 +481,8 @@ function tryGuessRush(pseudo, guess) {
         currentRush = null
     }
 
+    io.emit('currentRush', currentRush)
+
     updateJSONs()
 }
 
@@ -492,7 +500,7 @@ function displayCurrentRushInfos() {
             .map(({definition, mot}) => `${definition} - [ ${mot} ]`)
             .join(', ')} (mots restants : ${currentRush.remainingMotsCount + currentRush.currentMots.length})`)
     } else {
-
+        tmiClient.say(twitchChannel, `MF RUSH - Pas de rush en cours.`)
     }
 }
 
