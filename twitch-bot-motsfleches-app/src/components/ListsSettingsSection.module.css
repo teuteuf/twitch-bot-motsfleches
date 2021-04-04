@@ -4,7 +4,7 @@
 }
 
 .lists {
-    flex: 1 0 30em;
+    flex: 1 1 30em;
     display: flex;
     flex-direction: column;
     margin: 0.25em;
@@ -42,11 +42,13 @@
 
 .lists > form {
     display: flex;
+    flex-wrap: wrap;
     margin: 0.5em;
 }
 
 .lists > form > input {
-    flex: 2;
+    width: 0;
+    flex: 2 1 10em;
     margin: 0.25em;
     padding: 0.25em;
 }
@@ -58,6 +60,7 @@
 }
 
 .lists > form > button {
+    flex: 1;
     margin: 0.25em;
     padding: 0.25em;
 }
